@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:leanapigetx/controller/todomodels.dart';
 
 class TodoController extends GetxController {
+  RxBool isLoading = true.obs;
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -16,12 +18,14 @@ class TodoController extends GetxController {
 
   // getTODOS()
   Future<RxList<TodoModel>> getTodos() async {
+    isLoading.value = true;
     final response = await http.get(
         Uri.parse("https://67b0d37b3fc4eef538e88a6e.mockapi.io/api/todolist"));
     var data = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
       for (Map<String, dynamic> index in data) {
         todoList.add(TodoModel.fromJson(index));
+        isLoading.value = false;
       }
       return todoList;
     } else {

@@ -5,10 +5,11 @@ import 'package:leanapigetx/controller/api/todocontrollor.dart';
 class ViewHome extends StatelessWidget {
    ViewHome({super.key});
   TodoController todoController = Get.put(TodoController());
-  @override
+
+
+   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -27,45 +28,52 @@ class ViewHome extends StatelessWidget {
             child: Text('All todo List', style: TextStyle(fontSize: 20)),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 1,
-              itemBuilder: (context, index) {
-                return Obx(() => Column(
-                    children: todoController.todoList
-                        .map((e) => ListTile(
-                              title: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("${e.title.toString()}"),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            _editshowDailogy(controller);
-                                          },
-                                          icon: const Icon(Icons.edit),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            _deleteshowdailogy();
-                                          },
-                                          icon: const Icon(Icons.delete),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ))
-                        .toList()));
-              },
-            ),
+            child: Obx(() {
+              if (todoController.isLoading.value) {
+                return const Center(
+                  child: CircularProgressIndicator(), // Loader when data is fetching
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: 1,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: todoController.todoList.map((e) => ListTile(
+                        title: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("${e.title}"),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      _editshowDailogy(controller);
+                                    },
+                                    icon: const Icon(Icons.edit),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      _deleteshowdailogy();
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )).toList(),
+                    );
+                  },
+                );
+              }
+            }),
           )
         ],
       ),
